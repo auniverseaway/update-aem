@@ -12,4 +12,4 @@ Deploys desired hotfixes to an AEM instance.
 4. Run the script ```./updateaem```
 
 ### Credits
-Based in part on this [blog post](http://labs.6dglobal.com/blog/2016-01-08/installing-aem61-hod
+Based in part on this [blog post](http://labs.6dglobal.com/blog/2016-01-08/installing-aem61-hotfixes/)
