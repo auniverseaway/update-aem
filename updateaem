@@ -1,0 +1,39 @@
+#!/bin/bash
+
+# -----------------------------------------------
+# 1. AEM Settings
+
+LOCAL_HOST="localhost"
+LOCAL_PORT="4502"
+LOCAL_ADMIN_USER="admin"
+LOCAL_ADMIN_PASS="admin"
+
+# -----------------------------------------------
+# 2. Path to the root directory holding the hotfixes
+
+PACKAGES_ROOT="./packages"
+
+# -----------------------------------------------
+# 3. Start the script
+
+echo -e "AEM instance:\n  Host: $LOCAL_HOST\n  Port: $LOCAL_PORT\n"
+
+# ----------------------------------------------------------------
+# 4. List the directory, sort by modified date, install the packages.
+
+for zip in `ls -tr $PACKAGES_ROOT`; do
+
+    FILE=$PACKAGES_ROOT/$zip
+    echo "Installing Package $zip on AEM."
+    OUTPUT=$(curl --silent -u $LOCAL_ADMIN_USER:$LOCAL_ADMIN_PASS -F file=@"$FILE" -F name="$zip" -F force=true -F install=true http://$LOCAL_HOST:$LOCAL_PORT/crx/packmgr/service.jsp)
+
+    if [[ $OUTPUT == *"<status code=\"200\">ok</status>"* ]]
+    then
+        echo -e "Installed. Waiting 60 seconds for workflows, bundle restarts, and cleanup scripts to complete.\n";
+        sleep 60s
+    else
+        echo -e "Failed! Exiting.\n";
+        break # get outta here!
+    fi
+
+done
